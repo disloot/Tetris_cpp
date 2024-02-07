@@ -1,6 +1,7 @@
 #include "terminal.h"
 
 #include <iostream>
+
 #define CSI "\033["
 void tc::move_to(int x, int y) { std::cout << CSI << x << ';' << y << 'H'; }
 void tc::set_fore_color(int color) {
