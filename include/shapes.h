@@ -5,9 +5,11 @@
 
 #include "terminal.h"
 using std::string;
-enum class Derection { UP, DOWN, LIGHT, RIGHT };
+enum class Derection { UP, DOWN, LEFT, RIGHT };
 
 class Shape {  // ToDo
+  friend class Game;
+
  public:
   Shape() = default;
   Shape(int x, int y);
@@ -18,9 +20,10 @@ class Shape {  // ToDo
   ~Shape() = default;
   virtual void display() const = 0;
   void move_to(int x, int y);
-  void move_down();
-  void move_left();
-  void move_right();
+  bool move_down();
+  bool move_left();
+  virtual bool move_right();
+  virtual void change() = 0;
   friend void tc::move_to(int x, int y);
   friend void tc::set_fore_color(int color);
   friend void tc::set_back_color(int color);
@@ -30,9 +33,9 @@ class Shape {  // ToDo
   friend void tc::show_cursor();
 
  protected:
-  int x = 1;
-  int y = 1;
-  Derection derection = Derection::UP;
+  int x = 0;
+  int y = 0;
+  Derection derection = Derection::LEFT;
   int color = 15;
   static int limit_down;
   static int limit_left;
@@ -47,6 +50,8 @@ class LongShape : public Shape {  // ToDo
   ~LongShape() = default;
   using Shape::Shape;
   void display() const override;
+  bool move_right() override;
+  void change() override;
 
  private:
   int color = 20;
@@ -61,6 +66,10 @@ class LShape : public Shape {  // ToDo
   LShape &operator=(const LShape &) = default;
   ~LShape() = default;
   void display() const override;
+  // bool move_down() override;
+  // bool move_left();
+  // bool move_right();
+  void change() override;
 
  private:
   int color = 75;
