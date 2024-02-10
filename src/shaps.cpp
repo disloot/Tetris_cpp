@@ -42,30 +42,7 @@ void LongShape::display() const {
   tc::clear_screen();
   tc::move_to(x, y);
   tc::set_back_color(color);
-  switch (derection) {
-    case Derection::LEFT:
-    case Derection::RIGHT:
-      std::cout << "        ";
-      break;
-    case Derection::DOWN:
-    case Derection::UP:
-      std::cout << " ";
-      tc::move_to(x + 1, y);
-      std::cout << " ";
-      tc::move_to(x + 2, y);
-      std::cout << " ";
-      tc::move_to(x + 3, y);
-      std::cout << " ";
-      tc::move_to(x + 4, y);
-      std::cout << " ";
-      tc::move_to(x + 5, y);
-      std::cout << " ";
-      tc::move_to(x + 6, y);
-      std::cout << " ";
-      tc::move_to(x + 7, y);
-      std::cout << " ";
-      break;
-  }
+  std::cout << "        ";
   std::cout << std::flush;
   tc::reset_color();
 }

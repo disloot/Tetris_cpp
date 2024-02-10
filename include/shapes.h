@@ -1,6 +1,5 @@
 #ifndef SHAPES_H
 #define SHAPES_H
-#include <random>
 #include <string>
 
 #include "terminal.h"
@@ -59,6 +58,7 @@ class LongShape : public Shape {  // ToDo
 
 class LShape : public Shape {  // ToDo
  public:
+  using Shape::Shape;
   LShape() = default;
   LShape(LShape &&) = default;
   LShape(const LShape &) = default;
