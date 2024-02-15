@@ -9,5 +9,7 @@ void clear_screen();
 void reset_color();
 void hide_cursor();
 void show_cursor();
+void display_at(int x, int y, int color);
 }  // namespace tc
+
 #endif  // !TERMINAL_H

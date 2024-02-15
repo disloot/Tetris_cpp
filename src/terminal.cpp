@@ -14,3 +14,10 @@ void tc::clear_screen() { std::cout << CSI << "2J"; }
 void tc::reset_color() { std::cout << CSI << "0m"; }
 void tc::hide_cursor() { std::cout << CSI << "?25l"; }
 void tc::show_cursor() { std::cout << CSI << "?25h"; }
+void tc::display_at(int x, int y, int color) {
+  tc::set_back_color(color);
+  tc::move_to(y, x);
+  std::wcout << " ";
+  std::cout << std::flush;
+  tc::reset_color();
+}

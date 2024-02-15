@@ -1,60 +1,70 @@
 
 #include "game.h"
 
+#include <chrono>
 #include <iostream>
 #include <random>
+#include <ratio>
 #include <thread>
-#include <utility>
 
 #include "shapes.h"
+#include "terminal.h"
 using namespace std::chrono_literals;
-using std::move;
 enum class ShapeName {
   LongShape,
   LShape,
 };
-
-Game::Game(int limit_left, int limit_right, int limit_down) {
-  shape_gen();
-  Shape::limit_left = limit_left;
-  Shape::limit_right = limit_right;
-  Shape::limit_down = limit_down;
-}
-void Game::begain() {
-  while (true) {
-    while (current_shape->move_down()) {
-      std::this_thread::sleep_for(500ms);
+Game::Game()
+    : len_x(sizeof(map) / sizeof(map[0])),
+      len_y(sizeof(map[0]) / sizeof(int)) {}
+void Game::draw() {
+  tc::clear_screen();
+  for (auto i = 0; i < len_y; i++) {
+    for (auto j = 0; j < len_x; j++) {
+      tc::display_at(j + 1, i + 1, map[j][i]);
     }
-    shape_gen();
   }
+}
+bool Game::move_down() {
+  for (auto i = 0; i < 4; i++) {
+    map[loc_x + shap_map[current_shape][derection][i][0]]
+       [loc_y + shap_map[current_shape][derection][i][1]] = 0;
+  }
+  for (auto i = 0; i < 4; i++) {
+    if (loc_y + shap_map[current_shape][derection][i][1] + 1 >= len_y ||
+        map[loc_x + shap_map[current_shape][derection][i][0]]
+           [loc_y + shap_map[current_shape][derection][i][1] + 1] != 0) {
+      for (auto i = 0; i < 4; i++) {
+        map[loc_x + shap_map[current_shape][derection][i][0]]
+           [loc_y + shap_map[current_shape][derection][i][1]] =
+               color[current_shape];
+      }
+      return false;
+    }
+  }
+  for (auto i = 0; i < 4; i++) {
+    map[loc_x + shap_map[current_shape][derection][i][0]]
+       [loc_y + shap_map[current_shape][derection][i][1] + 1] =
+           color[current_shape];
+  }
+  loc_y++;
+  return true;
 }
 void Game::shape_gen() {
   std::random_device rd;
   std::mt19937 gen(rd());
-  std::uniform_int_distribution<int> dis_shape(0, 1);
-  std::uniform_int_distribution<> dis_direction(0, 3);
-  auto shapename = static_cast<ShapeName>(dis_shape(gen));
-  auto derection = static_cast<Derection>(dis_direction(gen));
-  switch (shapename) {
-    case ShapeName::LongShape:
-      current_shape = new LongShape(0, 8);
-      break;
-    case ShapeName::LShape:
-      current_shape = new LShape(0, 8);
-      break;
-  }
-  switch (derection) {
-    case Derection::DOWN:
-      current_shape->derection = Derection::DOWN;
-      break;
-    case Derection::LEFT:
-      current_shape->derection = Derection::LEFT;
-      break;
-    case Derection::RIGHT:
-      current_shape->derection = Derection::RIGHT;
-      break;
-    case Derection::UP:
-      current_shape->derection = Derection::UP;
-      break;
+  std::uniform_int_distribution<> dis(0, 1);
+  current_shape = dis(gen);
+  loc_x = 4;
+  loc_y = 0;
+}
+void Game::begain() {
+  while (true) {
+    shape_gen();
+    while (move_down()) {
+      draw();
+      std::this_thread::sleep_for(100ms);
+    }
+    draw();
   }
 }
